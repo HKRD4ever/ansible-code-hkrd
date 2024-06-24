@@ -1,0 +1,33 @@
+---
+- hosts: ws
+  become: 1
+  gather_facts: 1
+  ignore_errors: True
+  vars:
+    user_name: serge2026
+    group: terraform
+  vars_files:
+    - variables.yml
+  tasks:
+    - name: Check server uptime
+      command: "{{ my_command }}"
+      register: my_uptime
+
+    - name: List directory
+      shell: ls
+
+    - name: Check the kernel version
+      command: uname -r
+      register: kernel_output
+
+    - name: Create user
+      ansible.builtin.user:
+        name: "{{ user_name }}"
+
+    - name: Create group
+      ansible.builtin.group:
+        name: "{{ group }}"
+
+    - name: Read data
+      debug:
+        var: "my_uptime.stdout[:19]"
